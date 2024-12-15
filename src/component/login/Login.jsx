@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/useContext";
 import "./Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {login, user} = useAuth();
   const history = useNavigate(); 
-  const handleEmailPasswordLogin = (e) => {
+  
+  const handleEmailPasswordLogin = async (e) => {
     e.preventDefault();
-     history.push("/home");
+    try {
+      await login(email, password); // Call login API
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   const handleGitHubLogin = () => {
