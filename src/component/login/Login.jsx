@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useContext";
 import "./Login.css";
 
@@ -55,6 +55,7 @@ const Login = () => {
         <button className="github-button" onClick={handleGitHubLogin}>
           Login with GitHub
         </button>
+        <p style={{color:"black"}}>New User ? <Link to='/register'> Register here</Link></p>
       </div>
     </div>
   );

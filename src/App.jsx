@@ -7,6 +7,7 @@ import Home from "./component/Home/Home";
 import GitHubCallback from './component/GitHubCallback';
 import "./App.css";
 import AuthRoute from './component/PrivateRoute';
+import Register from "./component/Register/Register";
 const App = () => {
   return (
     <>
@@ -14,6 +15,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
           <Route
             path="/dashboard"
             element={<Dashboard />}
