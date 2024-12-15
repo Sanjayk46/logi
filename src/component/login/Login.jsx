@@ -1,14 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const history = useNavigate(); 
   const handleEmailPasswordLogin = (e) => {
     e.preventDefault();
-    // Replace with actual login logic
-    console.log("Logging in with:", email, password);
+     history.push("/home");
   };
 
   const handleGitHubLogin = () => {
@@ -44,7 +44,7 @@ const Login = () => {
             Login
           </button>
         </form>
-        <p style={{"color":"blacko"}}>OR</p>
+        <p style={{ color: "black" }}>OR</p>
         <button className="github-button" onClick={handleGitHubLogin}>
           Login with GitHub
         </button>
