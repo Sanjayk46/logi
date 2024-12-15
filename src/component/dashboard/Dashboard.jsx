@@ -1,10 +1,27 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useContext";
 import "./dashboard.css";
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, setUser, logout } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Get user data from URL params (after GitHub login redirect)
+    const queryParams = new URLSearchParams(location.search);
+    const userData = queryParams.get("user");
+    const token = queryParams.get("token");
+
+    if (userData && !user) {
+      const parsedUser = JSON.parse(userData);
+      setUser({ ...parsedUser, token });
+    }
+  }, [location, setUser, user]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="dashboard-container">
@@ -21,14 +38,12 @@ const Dashboard = () => {
             <Link to="/settings">Settings</Link>
           </li>
         </ul>
-        {user && (
-          <div className="sidebar-user">
-            <p>Welcome, {user.name}</p>
-            <button onClick={logout} className="logout-button">
-              Logout
-            </button>
-          </div>
-        )}
+        <div className="sidebar-user">
+          <p>Welcome, {user.name}</p>
+          <button onClick={logout} className="logout-button">
+            Logout
+          </button>
+        </div>
       </div>
       <div className="dashboard-content">
         <h1>Welcome to the Dashboard</h1>

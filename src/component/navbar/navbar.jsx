@@ -17,7 +17,9 @@ const Navbar = () => {
       <div className="navbar-right">
         {user ? (
           <>
-            <span className="navbar-username">Hello, {user.name}</span>
+            <span className="navbar-username">
+              Hello, {user.profile?.name || user.name}
+            </span>
             <button className="navbar-logout" onClick={logout}>
               Logout
             </button>

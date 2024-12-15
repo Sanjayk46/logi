@@ -5,6 +5,7 @@ import Navbar from "./component/navbar/navbar";
 import Dashboard from "./component/dashboard/Dashboard";
 import Login from "./component/login/Login";
 import Home from "./component/Home/Home";
+import PrivateRoute from "./component/PrivateRoute"; // import the PrivateRoute component
 import "./App.css";
 
 const App = () => {
@@ -15,7 +16,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          
+          {/* Use PrivateRoute only for the dashboard route */}
+          <PrivateRoute path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </AuthProvider>
