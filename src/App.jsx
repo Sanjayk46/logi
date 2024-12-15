@@ -14,12 +14,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-
-          <Route path="/auth/github/callback" element={<GitHubCallback />} />
-          {/* <Route
+          <Route
             path="/dashboard"
-            element={<AuthRoute element={<Dashboard />} />}
-          /> */}
+            element={<Dashboard />}
+          />
         </Routes>
     </>
   );

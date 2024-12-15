@@ -1,33 +1,39 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/useContext";
+import { useAuth } from "../../context/useContext"; // Import the useAuth hook for authentication context
 import "./dashboard.css";
 
 const Dashboard = () => {
-  const { user, setUser, logout } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { user, setUser, logout } = useAuth(); // Access user data, setUser, and logout functions
+  const location = useLocation(); // Get the current location (for query params)
+  const navigate = useNavigate(); // To navigate programmatically
 
   useEffect(() => {
     // Check if user is already set in context or if we need to parse data from URL params
     if (!user) {
-      // Get user data and token from the URL after GitHub login
       const queryParams = new URLSearchParams(location.search);
       const userData = queryParams.get("user");
       const token = queryParams.get("token");
 
       if (userData && token) {
-        const parsedUser = JSON.parse(userData);
-        setUser({ ...parsedUser, token });
+        try {
+          const parsedUser = JSON.parse(decodeURIComponent(userData)); // Decode user data
+          setUser({ ...parsedUser, token }); // Store the user in context
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+          navigate("/login"); // Redirect to login if data is invalid
+        }
       } else {
-        // Redirect to login page if no valid data found
-        navigate("/login");
+        navigate("/login"); // Redirect to login if no valid data is found
       }
+    } else {
+      // If user is already authenticated, redirect to the dashboard
+      navigate("/dashboard");
     }
   }, [location, setUser, user, navigate]);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Display a loading message while checking user authentication
   }
 
   return (
