@@ -7,50 +7,41 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // State to store user data
+  const [user, setUser] = useState(null);
 
   // Login Function
   const login = async (email, password) => {
     try {
-      const { data } = await AxiosService.post("/user/login", { email, password }); // API call
+      const { data } = await AxiosService.post("/user/login", { email, password });
       setUser(data);
-      localStorage.setItem("user", JSON.stringify(data)); // Save user data in localStorage
+      localStorage.setItem("user", JSON.stringify(data));
       toast.success("Login successful!");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Login failed!");
     }
   };
 
-  // Register Function
-  const register = async (registerData) => {
-    try {
-      const { data } = await AxiosService.post("/user/register", registerData); // API call
-      setUser(data);
-      localStorage.setItem("user", JSON.stringify(data)); // Save user data in localStorage
-      toast.success("Registration successful!");
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Registration failed!");
-    }
-  };
-
   // Logout Function
   const logout = () => {
-    setUser(null); // Clear user state
-    localStorage.removeItem("user"); // Clear localStorage
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("github_user"); // Clear GitHub user
     toast.info("Logged out successfully!");
   };
 
-  
-  // Automatically load user from localStorage on app load
+  // Auto-load user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    const githubUser = localStorage.getItem("github_user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+    } else if (githubUser) {
+      setUser(JSON.parse(githubUser));
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout}}>
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

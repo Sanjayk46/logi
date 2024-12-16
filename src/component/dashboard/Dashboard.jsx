@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/useContext"; // Import the useAuth hook for authentication context
+import { useAuth } from "../../context/useContext";
 import "./dashboard.css";
 
 const Dashboard = () => {
   const { user, setUser, logout } = useAuth(); // Access user data, setUser, and logout functions
-  const location = useLocation(); // Get the current location (for query params)
-  const navigate = useNavigate(); // To navigate programmatically
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is already set in context or if we need to parse data from URL params
+    // Check if user is already set in context or parse user from query params
     if (!user) {
       const queryParams = new URLSearchParams(location.search);
       const userData = queryParams.get("user");
@@ -17,23 +17,34 @@ const Dashboard = () => {
 
       if (userData && token) {
         try {
-          const parsedUser = JSON.parse(decodeURIComponent(userData)); // Decode user data
-          setUser({ ...parsedUser, token }); // Store the user in context
+          const parsedUser = JSON.parse(decodeURIComponent(userData)); // Parse user data
+          setUser({ ...parsedUser, token }); // Store user in context
+          localStorage.setItem(
+            "github_user",
+            JSON.stringify({ ...parsedUser, token })
+          ); // Save user details to localStorage
         } catch (error) {
           console.error("Error parsing user data:", error);
-          navigate("/login"); // Redirect to login if data is invalid
+          navigate("/login"); // Redirect to login if user data is invalid
         }
       } else {
         navigate("/login"); // Redirect to login if no valid data is found
       }
-    } else {
-      // If user is already authenticated, redirect to the dashboard
-      navigate("/dashboard");
     }
   }, [location, setUser, user, navigate]);
 
+  // Load user details from localStorage on reload if user context is empty
+  useEffect(() => {
+    if (!user) {
+      const storedUser = localStorage.getItem("github_user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }
+  }, [user, setUser]);
+
   if (!user) {
-    return <div>Loading...</div>; // Display a loading message while checking user authentication
+    return <div>Loading...</div>;
   }
 
   return (
@@ -53,6 +64,12 @@ const Dashboard = () => {
         </ul>
         <div className="sidebar-user">
           <p>Welcome, {user.name}</p>
+          <p>Email: {user.email}</p>
+          <img
+            src={user.avatar_url}
+            alt="GitHub Avatar"
+            style={{ borderRadius: "50%", width: "100px" }}
+          />
           <button onClick={logout} className="logout-button">
             Logout
           </button>
@@ -61,6 +78,7 @@ const Dashboard = () => {
       <div className="dashboard-content">
         <h1>Welcome to the Dashboard</h1>
         <p>Use the sidebar to navigate through the app.</p>
+        <p>Your GitHub username: {user.login}</p>
       </div>
     </div>
   );
