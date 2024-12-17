@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./component/navbar/navbar";
 import Home from "./component/Home/Home";
 import Login from "./component/login/Login";
+import Register from "./component/Register/Register";
 import Dashboard from "./component/dashboard/Dashboard";
 import GitHubCallback from "./component/GitHubCallback";
 import AuthRoute from "./component/PrivateRoute";
@@ -13,6 +14,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/auth/github/callback" element={<GitHubCallback />} />
       <Route
         path="/dashboard"
