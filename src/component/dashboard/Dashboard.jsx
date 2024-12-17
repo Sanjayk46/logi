@@ -4,12 +4,12 @@ import { useAuth } from "../../context/useContext";
 import "./dashboard.css";
 
 const Dashboard = () => {
-  const { user, setUser, logout } = useAuth(); // Access user data, setUser, and logout functions
+  const { user, setUser, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Load GitHub user details from query params or localStorage
   useEffect(() => {
-    // Check if user is already set in context or parse user from query params
     if (!user) {
       const queryParams = new URLSearchParams(location.search);
       const userData = queryParams.get("user");
@@ -17,34 +17,29 @@ const Dashboard = () => {
 
       if (userData && token) {
         try {
-          const parsedUser = JSON.parse(decodeURIComponent(userData)); // Parse user data
-          setUser({ ...parsedUser, token }); // Store user in context
+          const parsedUser = JSON.parse(decodeURIComponent(userData));
+          setUser({ ...parsedUser, token }); // Save user in context
           localStorage.setItem(
             "github_user",
             JSON.stringify({ ...parsedUser, token })
-          ); // Save user details to localStorage
+          );
         } catch (error) {
-          console.error("Error parsing user data:", error);
-          navigate("/login"); // Redirect to login if user data is invalid
+          console.error("Error parsing GitHub user data:", error);
+          navigate("/login");
         }
       } else {
-        navigate("/login"); // Redirect to login if no valid data is found
+        const storedUser = localStorage.getItem("github_user");
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        } else {
+          navigate("/login");
+        }
       }
     }
   }, [location, setUser, user, navigate]);
 
-  // Load user details from localStorage on reload if user context is empty
-  useEffect(() => {
-    if (!user) {
-      const storedUser = localStorage.getItem("github_user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    }
-  }, [user, setUser]);
-
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>Loading user details...</div>;
   }
 
   return (
@@ -63,12 +58,12 @@ const Dashboard = () => {
           </li>
         </ul>
         <div className="sidebar-user">
-          <p>Welcome, {user.name}</p>
-          <p>Email: {user.email}</p>
+          <p>Welcome, {user.name || user.login || "GitHub User"}</p>
+          <p>Email: {user.email || "Not available"}</p>
           <img
             src={user.avatar_url}
             alt="GitHub Avatar"
-            style={{ borderRadius: "50%", width: "100px" }}
+            className="user-avatar"
           />
           <button onClick={logout} className="logout-button">
             Logout
@@ -76,9 +71,17 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="dashboard-content">
-        <h1>Welcome to the Dashboard</h1>
+        <h1>Welcome to your GitHub Dashboard</h1>
         <p>Use the sidebar to navigate through the app.</p>
-        <p>Your GitHub username: {user.login}</p>
+        <p>Your GitHub username: <strong>{user.login}</strong></p>
+        <a
+          href={`https://github.com/${user.login}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="github-profile-link"
+        >
+          View GitHub Profile
+        </a>
       </div>
     </div>
   );

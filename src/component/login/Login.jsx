@@ -20,6 +20,7 @@ const Login = () => {
 
   const handleGitHubLogin = () => {
     window.location.href = "https://login-backend-9cim.onrender.com/auth/github";
+   // window.location.href = "http://localhost:8000/auth/github"
   };
 
   return (

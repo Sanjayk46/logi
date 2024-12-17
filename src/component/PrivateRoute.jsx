@@ -1,13 +1,9 @@
-import React from 'react';
-import {Navigate, useLocation} from 'react-router-dom';
-import {useAuth } from '../context/useContext';
+import React from "react";
+import { Navigate } from "react-router-dom";
 
-export default function AuthRoute({children}){
-    const location = useLocation();
-    const {user} = useAuth();
-    return user ?(
-        children
-    ):(
-  <Navigate to={`/login?returnUrl=${location.pathname}`} replace/>
-    );
-}
+const AuthRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" />;
+};
+
+export default AuthRoute;

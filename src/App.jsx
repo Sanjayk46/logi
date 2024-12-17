@@ -1,28 +1,29 @@
 import React from "react";
-import {  Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./component/navbar/navbar";
-import Dashboard from "./component/dashboard/Dashboard";
-import Login from "./component/login/Login";
 import Home from "./component/Home/Home";
-import GitHubCallback from './component/GitHubCallback';
-import "./App.css";
-import AuthRoute from './component/PrivateRoute';
-import Register from "./component/Register/Register";
-const App = () => {
-  return (
-    <>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
-          <Route
-            path="/dashboard"
-            element={<Dashboard />}
-          />
-        </Routes>
-    </>
-  );
-};
+import Login from "./component/login/Login";
+import Dashboard from "./component/dashboard/Dashboard";
+import GitHubCallback from "./component/GitHubCallback";
+import AuthRoute from "./component/PrivateRoute";
+
+const App = () => (
+  <>
+    <Navbar />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/auth/github/callback" element={<GitHubCallback />} />
+      <Route
+        path="/dashboard"
+        element={
+          <AuthRoute>
+            <Dashboard />
+          </AuthRoute>
+        }
+      />
+    </Routes>
+  </>
+);
 
 export default App;
