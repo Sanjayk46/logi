@@ -20,7 +20,16 @@ export const AuthProvider = ({ children }) => {
       toast.error(error?.response?.data?.message || "Login failed!");
     }
   };
-
+const register = async (name,email, password) => {
+    try {
+      const { data } = await AxiosService.post("/user/register", {name, email, password });
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
+      toast.success("register successful!");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Login failed!");
+    }
+  };
   // Logout Function
   const logout = () => {
     setUser(null);
