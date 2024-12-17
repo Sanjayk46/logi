@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/useContext";
+import { useAuth } from "../../context/useContext";  // Ensure useAuth is correctly implemented
+import { toast } from "react-toastify"; // Ensure toast is imported correctly
 import "./register.css";
 
 const Register = () => {
@@ -8,36 +9,38 @@ const Register = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const {register, user} = useAuth();
-  const history = useNavigate(); 
+  const { register, user } = useAuth();  // Make sure 'register' is a function in your context
+  const navigate = useNavigate();  // Changed history to navigate
   
   const handleEmailPasswordLogin = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
     if (!name || !email || !password || !confirmPassword) {
-        toast.error("Please fill in all fields.");
-        return;
-      }
-  
-      if (password !== confirmPassword) {
-        toast.error("Passwords do not match.");
-        return;
-      }
-        await register({ name, email, password });
-        
-        history('/login')
-  
-  };
+      toast.error("Please fill in all fields.");
+      return;
+    }
 
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    try {
+      await register({ name, email, password });
+      navigate('/login'); // Use navigate for redirection
+    } catch (error) {
+      toast.error("Registration failed.");
+    }
+  };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-title">Login</h1>
+        <h1 className="login-title">Register</h1> {/* Changed Login to Register */}
         <form className="login-form" onSubmit={handleEmailPasswordLogin}>
-        <div className="form-group">
+          <div className="form-group">
             <label>Name</label>
             <input
-              type="name"
+              type="text"  // Changed to 'text' as 'name' is a text field
               placeholder="Enter your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -75,7 +78,7 @@ const Register = () => {
             />
           </div>
           <button type="submit" className="login-button">
-          Register
+            Register
           </button>
         </form>
       </div>
